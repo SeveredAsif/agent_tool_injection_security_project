@@ -1,0 +1,6 @@
+# Frozen against the environment that produced results/summary.json.
+# scikit-learn was removed: the report's defense (Section 13) has four stages and
+# none of them is an ML classifier.
+matplotlib==3.10.8
+requests==2.32.5
+pytest==8.4.1

@@ -192,7 +192,14 @@ def run_experiments(backend: str = "mock", model: str = config.MODEL_NAME,
                     bucket.append(result)
                     ck.write(json.dumps(result.full_record(), ensure_ascii=False) + "\n")
                     ck.flush()
-                    os.fsync(ck.fileno())
+                    # fsync forces the trial to disk so a power loss costs at most
+                    # one trial. On Windows the descriptor can briefly go bad; that
+                    # must not kill a run that is hours deep. flush() already handed
+                    # the bytes to the OS, so the checkpoint stays consistent.
+                    try:
+                        os.fsync(ck.fileno())
+                    except OSError:
+                        pass
                     done += 1
                     fresh += 1
                     if verbose:

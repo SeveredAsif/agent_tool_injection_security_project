@@ -2,7 +2,7 @@
 
 **CSE 406 Computer Security — Unauthorized Action via Tool Output**  
 Ali Asif Khan (2105131) · Shariar Al Kabir (2105132)  
-Generated 2026-09-19 01:13 from `results/ollama_llama3.1-8b_t50_none/summary.json`
+Generated 2026-09-19 02:25 from `results/ollama_llama3.1-8b_t50_none/summary.json`
 
 ---
 
@@ -17,7 +17,7 @@ Generated 2026-09-19 01:13 from `results/ollama_llama3.1-8b_t50_none/summary.jso
 | Trials | 50 per case per configuration = **1600 total** |
 | Test cases | 8 (TC-01…TC-08) across 4 injection strategies |
 
-**Deviation from the plan.** Design report Section 16 specifies NUM_TRIALS = 100 per (strategy, configuration) pair. With two test cases per strategy this run used 50 per case, i.e. **100 per (strategy, configuration)**, reduced for compute budget. 95% Wilson confidence intervals are reported on every rate metric, and no claim of significance is made where intervals overlap.
+**Trial budget matches the plan.** Design report Section 16 specifies NUM_TRIALS = 100 per (strategy, configuration) pair. With two test cases per strategy this run used 50 per case, i.e. **100 per (strategy, configuration)** — the planned budget. 95% Wilson confidence intervals are reported on every rate metric, and no claim of significance is made where intervals overlap.
 
 **Deviation on E1.** Table 1 assigns FBR to E1 (attack=no, defense=no). FBR cannot be measured with the defense off — nothing can over-block when nothing is checking. The benign side is therefore split:
 
@@ -27,6 +27,13 @@ Generated 2026-09-19 01:13 from `results/ollama_llama3.1-8b_t50_none/summary.jso
 | E1D | no | yes | FBR |
 | E2 | yes | no | ASR, unauthorized execution |
 | E3 | yes | yes | ASR, DDR, TCR under attack |
+
+### Member responsibilities
+
+| Member | Responsible for |
+| --- | --- |
+| **Ali Asif Khan (2105131)** | Agent loop (`agent/`), four-stage defense (`environment/trust.py`, `defense/validator.py`, `allowlist.py`, `authorization.py`), evaluation and metrics (`evaluation/`), experiment harness, reproducibility and provenance |
+| **Shariar Al Kabir (2105132)** | Attack tool (`attack/attack.py`), payload generation across five axes (`attack/payloads.py`), four injection strategies (`attack/strategies.py`), adaptive-attacker modes (delimiter spoof, split calls) |
 
 ## 1. The attack process
 
@@ -198,16 +205,16 @@ Evidence that this is structural rather than lucky:
 
 ### Cross-model check — `mistral:7b-instruct`
 
-(10 trials per case per configuration.)
+(50 trials per case per configuration.)
 
 | Configuration | ASR | DDR | FBR | TCR |
 | --- | --- | --- | --- | --- |
-| E1 — benign, no defense | n/a | n/a | 0.000 [0.000, 0.046] (0/80) | 0.775 [0.672, 0.853] (62/80) |
-| E1D — benign, defense on | n/a | n/a | 0.000 [0.000, 0.046] (0/80) | 0.775 [0.672, 0.853] (62/80) |
-| E2 — attack, no defense | 0.138 [0.079, 0.230] (11/80) | 0.000 [0.000, 0.259] (0/11) | n/a | 0.725 [0.619, 0.811] (58/80) |
-| E3 — attack, defense on | 0.087 [0.043, 0.170] (7/80) | 1.000 [0.646, 1.000] (7/7) | n/a | 0.775 [0.672, 0.853] (62/80) |
+| E1 — benign, no defense | n/a | n/a | 0.000 [0.000, 0.009] (0/400) | 0.760 [0.716, 0.799] (304/400) |
+| E1D — benign, defense on | n/a | n/a | 0.000 [0.000, 0.009] (0/400) | 0.760 [0.716, 0.799] (304/400) |
+| E2 — attack, no defense | 0.138 [0.107, 0.175] (55/400) | 0.000 [0.000, 0.065] (0/55) | n/a | 0.713 [0.666, 0.755] (285/400) |
+| E3 — attack, defense on | 0.095 [0.070, 0.128] (38/400) | 1.000 [0.908, 1.000] (38/38) | n/a | 0.757 [0.713, 0.797] (303/400) |
 
-Unauthorized executions: 11 in E2, **0 in E3**.
+Unauthorized executions: 55 in E2, **0 in E3**.
 
 ASR differs between models (0.8375 on `llama3.1:8b` vs 0.1375 on `mistral:7b-instruct`), confirming that susceptibility is model-dependent and that a single model's ASR must not be reported as general. DDR does not depend on the model, because the authorization layer is not a model.
 
@@ -244,7 +251,6 @@ ASR differs between models (0.8375 on `llama3.1:8b` vs 0.1375 on `mistral:7b-ins
 3. **Stage 3 is only as good as intent classification** (A4). This is the main residual risk.
 4. **The confirmation gate is auto-denied** in these unattended runs. A user who habitually approves prompts would weaken Stage 4; that human factor is untested here.
 5. **The `mock` backend is a harness self-test, not a result.** Its per-strategy susceptibility constants are simulation parameters and are never reported as measurements.
-6. **Reduced trial count** (100 per strategy/configuration rather than the planned 100), which widens every confidence interval.
 
 ## 9. Conclusion
 
@@ -273,3 +279,4 @@ Runs included:
 - `results/ollama_llama3.1-8b_t5_both/` — llama3.1:8b, 5 trials/case/config, adaptive=both
 - `results/ollama_llama3.1-8b_t5_none/` — llama3.1:8b, 5 trials/case/config, adaptive=none
 - `results/ollama_mistral-7b-instruct_t10_none/` — mistral:7b-instruct, 10 trials/case/config, adaptive=none
+- `results/ollama_mistral-7b-instruct_t50_none/` — mistral:7b-instruct, 50 trials/case/config, adaptive=none

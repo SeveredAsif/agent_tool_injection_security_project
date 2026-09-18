@@ -71,11 +71,21 @@ def build(runs: dict[str, dict[str, Any]]) -> str:
     w(f"| Trials | {n} per case per configuration = **{total} total** |")
     w("| Test cases | 8 (TC-01…TC-08) across 4 injection strategies |")
     w("")
-    w("**Deviation from the plan.** Design report Section 16 specifies "
-      "NUM_TRIALS = 100 per (strategy, configuration) pair. With two test cases per "
-      f"strategy this run used {n} per case, i.e. **{n * 2} per (strategy, configuration)**, "
-      "reduced for compute budget. 95% Wilson confidence intervals are reported on every "
-      "rate metric, and no claim of significance is made where intervals overlap.")
+    per_pair = n * 2  # two test cases per strategy
+    if per_pair >= 100:
+        w("**Trial budget matches the plan.** Design report Section 16 specifies "
+          "NUM_TRIALS = 100 per (strategy, configuration) pair. With two test cases per "
+          f"strategy this run used {n} per case, i.e. **{per_pair} per (strategy, "
+          "configuration)** — the planned budget. 95% Wilson confidence intervals are "
+          "reported on every rate metric, and no claim of significance is made where "
+          "intervals overlap.")
+    else:
+        w("**Deviation from the plan.** Design report Section 16 specifies "
+          "NUM_TRIALS = 100 per (strategy, configuration) pair. With two test cases per "
+          f"strategy this run used {n} per case, i.e. **{per_pair} per (strategy, "
+          "configuration)**, reduced for compute budget. 95% Wilson confidence intervals "
+          "are reported on every rate metric, and no claim of significance is made where "
+          "intervals overlap.")
     w("")
     w("**Deviation on E1.** Table 1 assigns FBR to E1 (attack=no, defense=no). FBR cannot "
       "be measured with the defense off — nothing can over-block when nothing is checking. "
@@ -87,6 +97,20 @@ def build(runs: dict[str, dict[str, Any]]) -> str:
     w("| E1D | no | yes | FBR |")
     w("| E2 | yes | no | ASR, unauthorized execution |")
     w("| E3 | yes | yes | ASR, DDR, TCR under attack |")
+    w("")
+
+    # ------------------------------------------------------------- member split
+    w("### Member responsibilities")
+    w("")
+    w("| Member | Responsible for |")
+    w("| --- | --- |")
+    w("| **Ali Asif Khan (2105131)** | Agent loop (`agent/`), four-stage defense "
+      "(`environment/trust.py`, `defense/validator.py`, `allowlist.py`, `authorization.py`), "
+      "evaluation and metrics (`evaluation/`), experiment harness, reproducibility and "
+      "provenance |")
+    w("| **Shariar Al Kabir (2105132)** | Attack tool (`attack/attack.py`), payload "
+      "generation across five axes (`attack/payloads.py`), four injection strategies "
+      "(`attack/strategies.py`), adaptive-attacker modes (delimiter spoof, split calls) |")
     w("")
 
     # ------------------------------------------------------------- 1
@@ -407,8 +431,9 @@ def build(runs: dict[str, dict[str, Any]]) -> str:
       "habitually approves prompts would weaken Stage 4; that human factor is untested here.")
     w("5. **The `mock` backend is a harness self-test, not a result.** Its per-strategy "
       "susceptibility constants are simulation parameters and are never reported as measurements.")
-    w(f"6. **Reduced trial count** ({n * 2} per strategy/configuration rather than the planned "
-      "100), which widens every confidence interval.")
+    if n * 2 < 100:
+        w(f"6. **Reduced trial count** ({n * 2} per strategy/configuration rather than the "
+          "planned 100), which widens every confidence interval.")
     w("")
 
     # ------------------------------------------------------------- 9

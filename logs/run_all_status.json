@@ -1,6 +1,6 @@
 {
-  "started": "2026-09-18T09:42:26",
-  "updated": "2026-09-18T13:27:12",
+  "started": "2026-09-18T21:11:49",
+  "updated": "2026-09-19T01:13:29",
   "current": null,
   "phases": [
     {
@@ -11,50 +11,46 @@
     {
       "name": "main_llama",
       "status": "done",
-      "trials": 640,
-      "started": "2026-09-18T09:42:32",
+      "trials": 1600,
+      "started": "2026-09-18T21:11:50",
       "progress": {
-        "done": 640,
-        "total": 640
+        "done": 1600,
+        "total": 1600
       },
       "eta_min": 0,
-      "elapsed_min": 112.9,
-      "finished": "2026-09-18T11:35:28"
+      "elapsed_min": 50.0,
+      "finished": "2026-09-18T22:01:48"
     },
     {
       "name": "pull_mistral",
       "status": "done",
-      "trials": 0,
-      "progress": {
-        "done": 95,
-        "total": 100
-      }
+      "trials": 0
     },
     {
       "name": "cross_mistral",
-      "status": "done",
-      "trials": 320,
-      "started": "2026-09-18T11:38:51",
+      "status": "failed",
+      "trials": 1600,
+      "started": "2026-09-18T22:01:48",
       "progress": {
-        "done": 320,
-        "total": 320
+        "done": 1476,
+        "total": 1600
       },
       "eta_min": 0,
-      "elapsed_min": 64.3,
-      "finished": "2026-09-18T12:43:12"
+      "elapsed_min": 191.4,
+      "finished": "2026-09-19T01:13:14"
     },
     {
       "name": "adaptive",
       "status": "done",
       "trials": 160,
-      "started": "2026-09-18T12:43:12",
+      "started": "2026-09-19T01:13:14",
       "progress": {
-        "done": 160,
+        "done": 0,
         "total": 160
       },
       "eta_min": 0,
-      "elapsed_min": 44.0,
-      "finished": "2026-09-18T13:27:12"
+      "elapsed_min": 0.2,
+      "finished": "2026-09-19T01:13:29"
     },
     {
       "name": "report",
@@ -62,7 +58,7 @@
       "trials": 0
     }
   ],
-  "profile": "deadline",
-  "estimate_hours": 6.1,
-  "finished": "2026-09-18T13:27:12"
+  "profile": "full",
+  "estimate_hours": 18.4,
+  "finished": "2026-09-19T01:13:29"
 }

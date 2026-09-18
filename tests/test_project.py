@@ -208,7 +208,7 @@ def test_defense_does_not_block_legitimate_work():
 # --- Metrics -------------------------------------------------------------
 
 def test_refusal_is_not_counted_as_task_success():
-    """GPT's version set success=True on a block; TCR must be ground-truth based."""
+    """A refusal is not task success. TCR must use a ground-truth check."""
     case = {"expected_substrings": ["31"]}
     assert task_completed(case, "Temperature: 31 C")
     assert not task_completed(case, "Blocked unauthorized side effect.")

@@ -1,0 +1,48 @@
+[15:53:41] ============================================================
+[15:53:41] run_all profile=full  estimate ~18.4 h
+[15:53:41]   main   llama3.1:8b x50  -> 1600 trials
+[15:53:41]   cross  mistral:7b-instruct x50 -> 1600 trials
+[15:53:41]   adapt  llama3.1:8b x5 (both) -> 160 trials
+[15:53:41] resumable: rerun this script after a shutdown and it continues
+[15:53:41] ============================================================
+[15:53:42] selftest passed
+[15:53:42] START main_llama: main.py --backend ollama --model llama3.1:8b --scenario experiments --trials 50
+[15:53:43]   main_llama: resuming, 640 trial(s) already done
+[16:01:52]   main_llama: 40/1600  ETA 473 min
+[16:06:37]   main_llama: 80/1600  ETA 271 min
+[16:11:03]   main_llama: 100/1600  ETA 284 min
+[16:16:31]   main_llama: 140/1600  ETA 250 min
+[16:21:37]   main_llama: 180/1600  ETA 228 min
+[16:27:05]   main_llama: 200/1600  ETA 242 min
+[16:32:26]   main_llama: 240/1600  ETA 226 min
+[16:36:10]   main_llama: 280/1600  ETA 204 min
+[16:40:10]   main_llama: 300/1600  ETA 205 min
+[16:43:52]   main_llama: 340/1600  ETA 189 min
+[16:47:25]   main_llama: 380/1600  ETA 174 min
+[16:51:02]   main_llama: 400/1600  ETA 174 min
+[16:55:18]   main_llama: 440/1600  ETA 164 min
+[16:59:12]   main_llama: 480/1600  ETA 154 min
+[17:03:07]   main_llama: 500/1600  ETA 154 min
+[17:07:21]   main_llama: 540/1600  ETA 146 min
+[17:11:15]   main_llama: 580/1600  ETA 137 min
+[17:15:08]   main_llama: 600/1600  ETA 136 min
+[17:20:53]   main_llama: 640/1600  ETA 131 min
+[17:28:48]   main_llama: 680/1600  ETA 129 min
+[17:36:06]   main_llama: 700/1600  ETA 133 min
+[17:42:23]   main_llama: 740/1600  ETA 127 min
+[17:48:45]   main_llama: 780/1600  ETA 122 min
+[17:55:28]   main_llama: 800/1600  ETA 123 min
+[18:04:50]   main_llama: 840/1600  ETA 119 min
+[18:14:53]   main_llama: 880/1600  ETA 116 min
+[18:21:47]   main_llama: 900/1600  ETA 116 min
+[18:28:48]   main_llama: 940/1600  ETA 110 min
+[18:36:12]   main_llama: 980/1600  ETA 104 min
+[18:42:52]   main_llama: 1000/1600  ETA 102 min
+[18:52:24]   main_llama: 1040/1600  ETA 97 min
+[19:06:20]   main_llama: 1080/1600  ETA 93 min
+[19:13:29]   main_llama: 1100/1600  ETA 91 min
+[19:18:51]   main_llama: 1140/1600  ETA 83 min
+[19:25:39]   main_llama: 1180/1600  ETA 76 min
+[19:36:03]   main_llama: 1200/1600  ETA 75 min
+[19:44:13]   main_llama: 1240/1600  ETA 67 min
+[19:52:05]   main_llama: 1280/1600  ETA 60 min

@@ -7,6 +7,8 @@ hand-written, so the report cannot drift from the data.
 from __future__ import annotations
 
 from datetime import datetime
+
+import config
 from typing import Any
 
 from evaluation.report import (axis_table, delta, fmt, headline_table, overlap,
@@ -14,7 +16,12 @@ from evaluation.report import (axis_table, delta, fmt, headline_table, overlap,
 
 
 def build(runs: dict[str, dict[str, Any]]) -> str:
-    main_tag, main = pick(runs, "ollama")
+    # Pick the PRIMARY model explicitly. Sorting by trial count alone is not
+    # enough: once the cross-model run reaches the same N, a tie would be broken
+    # alphabetically and mistral would be reported as the main result.
+    main_tag, main = pick(runs, "ollama", model=config.MODEL_NAME)
+    if main is None:
+        main_tag, main = pick(runs, "ollama")
     if main is None:
         raise SystemExit("no ollama run found in results/ -- run the experiments first")
     res, meta = main["results"], main["metadata"]
@@ -193,6 +200,32 @@ def build(runs: dict[str, dict[str, Any]]) -> str:
     # ------------------------------------------------------------- 4
     w("## 4. Where the outcome differed, and why")
     w("")
+    if not asr_overlap and (asr3.get("value") or 0) < (asr2.get("value") or 0):
+        ms2 = res.get("E2_by_strategy", {}).get("multi_step_injection", {}).get("ASR", {})
+        ms3 = res.get("E4_by_strategy", {}).get("multi_step_injection", {}).get("ASR", {})
+        w(f"### 4.0 ASR fell when the defense was on ({asr2.get('value')} → {asr3.get('value')})")
+        w("")
+        w("Prediction P2 said ASR would stay flat. P2 is **not confirmed**. The two "
+          "confidence intervals do not overlap, so this drop is real and not sampling noise.")
+        w("")
+        w("**Why.** The defense does not change the model's first decision. It changes what "
+          "the model can see afterwards. Two mechanisms cause the drop:")
+        w("")
+        w("1. **Chain truncation.** The multi-step strategy needs an intermediate tool call "
+          "to deliver stage 2. When that intermediate tool is outside the allowlist, the "
+          "runtime blocks it. Stage 2 never reaches the model. The model therefore never "
+          "proposes the target tool.")
+        if ms2 and ms3 and ms2.get("value") is not None and ms3.get("value") is not None:
+            w(f"   Measured: multi-step ASR falls {ms2['value']} → {ms3['value']}, the largest "
+              "drop of the four strategies.")
+        w("2. **Refusal feedback.** After a block, the runtime tells the model that the "
+          "refusal is final. Some trials then stop proposing the tool again.")
+        w("")
+        w("This is a secondary benefit, not a designed one. State it as an observation. Do "
+          "not claim the defense was built to reduce ASR — it was not. The primary claim "
+          "stands unchanged: DDR is what the authorization layer controls, and it reached "
+          f"{fmt(ddr3, False)}.")
+        w("")
     tcr2, tcr3 = e2.get("TCR", {}), e3.get("TCR", {})
     if (tcr3.get("value") or 0) > (tcr2.get("value") or 0):
         w(f"### 4.1 The defense *raised* task completion ({tcr2.get('value')} → {tcr3.get('value')})")

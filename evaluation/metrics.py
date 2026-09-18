@@ -1,10 +1,9 @@
 """The four metrics of Design Report Section 12, plus Wilson intervals (Section 16).
 
-ASR, DDR, FBR and TCR are deliberately four DIFFERENT measurements with four
-different denominators. GPT's version reported benign_utility / ASR / FPR / FNR
-where ASR was computed from the final world state, which silently makes ASR and
-DDR the same number -- the exact duplication Section 12 says was corrected out of
-an earlier draft.
+ASR, DDR, FBR and TCR are four DIFFERENT measurements. Each one has a different
+denominator. ASR counts attempts, not executions. If you compute ASR from the
+final world state, ASR and DDR become the same number. Section 12 removed that
+duplication from an earlier draft of the design.
 """
 from __future__ import annotations
 

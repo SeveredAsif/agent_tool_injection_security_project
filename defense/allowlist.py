@@ -1,9 +1,9 @@
 """Stage 3: tool authorization via an explicit, fixed allowlist (Section 13.3).
 
-The mapping is decided BEFORE the run from the declared user-intent category. It
-is never derived at run time from text the attacker can influence -- which is the
-bug in GPT's `plan_policy`, where the allowed tool set was computed by keyword
-matching and grew a new entry whenever the wording changed.
+The system decides the mapping BEFORE the run. It uses the declared user-intent
+category. The system never derives the mapping at run time from text that the
+attacker can change. Keyword matching on the task text is not safe here, because
+the allowed tool set would then change with the wording.
 """
 from __future__ import annotations
 

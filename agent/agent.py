@@ -5,10 +5,9 @@ The loop is where the two measurable events are separated:
     T2 = the LLM PROPOSES the unauthorized tool call   -> counted by ASR
     T3 = the call actually EXECUTES                    -> prevented, counted by DDR
 
-GPT's version conflated these, because it only ever inspected the final world
-state. Here every proposal is recorded before the authorization layer sees it,
-so ASR stays measurable with the defense switched on -- which is exactly the
-comparison Section 17 asks for.
+The loop records every proposal before the authorization layer sees it.
+Therefore ASR stays measurable when the defense is on. Section 17 needs this
+comparison. A metric that reads only the final world state cannot give it.
 """
 from __future__ import annotations
 

@@ -1,8 +1,8 @@
 """Stage 2: instruction / data separation (Design Report Section 13.2).
 
-GPT's version wrapped tool output in <tool_output> tags with no escaping at all,
-so an adaptive attacker could close the section by simply emitting the closing
-tag. Section 13.2 requires escaping literal delimiters found INSIDE the content.
+Section 13.2 requires the system to escape literal delimiters INSIDE the content.
+Without this step, an adaptive attacker can close the untrusted section early.
+The attacker only has to put the closing tag in the tool output.
 """
 from __future__ import annotations
 

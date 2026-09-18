@@ -69,11 +69,25 @@ class Status:
         self.save()
 
     def save(self) -> None:
+        """Write the status file. NEVER raise.
+
+        This is progress reporting only. A failure here must not stop an
+        experiment that has already run for hours. On Windows a file viewer or
+        editor holding the temp file open makes os.replace() raise
+        PermissionError, so the temp name is unique per write and every error is
+        swallowed.
+        """
         self.data["updated"] = datetime.now().isoformat(timespec="seconds")
-        LOG_DIR.mkdir(parents=True, exist_ok=True)
-        tmp = STATUS.with_suffix(".tmp")
-        tmp.write_text(json.dumps(self.data, indent=2), encoding="utf-8")
-        tmp.replace(STATUS)
+        try:
+            LOG_DIR.mkdir(parents=True, exist_ok=True)
+            tmp = STATUS.with_name(f".{STATUS.name}.{os.getpid()}.tmp")
+            tmp.write_text(json.dumps(self.data, indent=2), encoding="utf-8")
+            os.replace(tmp, STATUS)
+        except OSError:
+            try:
+                tmp.unlink(missing_ok=True)
+            except (OSError, NameError, UnboundLocalError):
+                pass
 
     def phase(self, name: str) -> dict:
         for p in self.data["phases"]:
@@ -144,25 +158,35 @@ def run_experiment(name: str, argv: list[str], expected_trials: int, status: Sta
     fresh_start = None
     fresh_done = 0
     try:
+        # This loop MUST keep reading until the pipe closes. The child writes to
+        # this pipe. If the loop stops early, the pipe buffer fills and the child
+        # blocks on its next print, which freezes the experiment with no error
+        # message anywhere. Therefore every statement inside is guarded.
         for line in proc.stdout:
-            line = line.rstrip()
-            tail.append(line)
-            del tail[:-40]
-            m = RESUMED.search(line)
-            if m:
-                log(f"  {name}: resuming, {m.group(1)} trial(s) already done")
-            m = PROGRESS.search(line)
-            if m:
-                done, total = int(m.group(1)), int(m.group(2))
-                if fresh_start is None:
-                    fresh_start, fresh_done = time.time(), done
-                rate = ((time.time() - fresh_start) / max(1, done - fresh_done)) \
-                    if done > fresh_done else SEC_PER_TRIAL
-                eta_s = rate * (total - done)
-                status.update(name, progress={"done": done, "total": total},
-                              eta_min=round(eta_s / 60, 1))
-                if done % 20 == 0 or done == total:
-                    log(f"  {name}: {done}/{total}  ETA {eta_s / 60:.0f} min")
+            try:
+                line = line.rstrip()
+                tail.append(line)
+                del tail[:-40]
+                m = RESUMED.search(line)
+                if m:
+                    log(f"  {name}: resuming, {m.group(1)} trial(s) already done")
+                m = PROGRESS.search(line)
+                if m:
+                    done, total = int(m.group(1)), int(m.group(2))
+                    if fresh_start is None:
+                        fresh_start, fresh_done = time.time(), done
+                    rate = ((time.time() - fresh_start) / max(1, done - fresh_done)) \
+                        if done > fresh_done else SEC_PER_TRIAL
+                    eta_s = rate * (total - done)
+                    status.update(name, progress={"done": done, "total": total},
+                                  eta_min=round(eta_s / 60, 1))
+                    if done % 20 == 0 or done == total:
+                        log(f"  {name}: {done}/{total}  ETA {eta_s / 60:.0f} min")
+            except Exception:
+                continue
+    except Exception:
+        # The pipe itself failed. Wait for the child, then report the exit code.
+        pass
     finally:
         proc.wait()
     ok = proc.returncode == 0

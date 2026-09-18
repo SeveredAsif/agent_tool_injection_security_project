@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 from pathlib import Path
 from time import perf_counter
 from typing import Any
@@ -141,31 +142,68 @@ def run_trial(case: dict[str, Any], experiment: str, backend: str, model: str,
 def run_experiments(backend: str = "mock", model: str = config.MODEL_NAME,
                     trials: int = config.NUM_TRIALS, adaptive: str = "none",
                     cases_path: str = "datasets/testcases.json",
-                    verbose: bool = True, tag: str | None = None) -> dict[str, Any]:
+                    verbose: bool = True, tag: str | None = None,
+                    resume: bool = True) -> dict[str, Any]:
     tag = tag or run_tag(backend, model, trials, adaptive)
     out_dir = OUTPUT_DIR / tag
     out_dir.mkdir(parents=True, exist_ok=True)
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
     cases = load_cases(cases_path)
+
+    # ---- resume support ------------------------------------------------
+    # Every finished trial is appended to a JSONL checkpoint as soon as it
+    # completes, so closing the laptop costs at most one trial. On restart the
+    # completed trial_ids are skipped rather than re-run.
+    ckpt = LOG_DIR / (tag + ".jsonl")
+    done_records: dict[str, TrialResult] = {}
+    if resume and ckpt.exists():
+        for line in ckpt.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                rec = json.loads(line)
+                done_records[rec["trial_id"]] = TrialResult(**rec)
+            except (json.JSONDecodeError, TypeError, KeyError):
+                continue          # a torn last line from an abrupt shutdown
+        if verbose and done_records:
+            print(f"  resuming: {len(done_records)} trial(s) already complete in {ckpt}",
+                  flush=True)
 
     all_trials: list[TrialResult] = []
     summaries: dict[str, Any] = {}
 
     total = len(CONFIGURATIONS) * len(cases) * trials
     done = 0
+    fresh = 0
     start_all = perf_counter()
-    for experiment in CONFIGURATIONS:
-        bucket: list[TrialResult] = []
-        for case in cases:
-            for trial in range(trials):
-                bucket.append(run_trial(case, experiment, backend, model, trial, adaptive))
-                done += 1
-                if verbose:
-                    rate = (perf_counter() - start_all) / done
-                    eta = rate * (total - done)
-                    print(f"  [{done:>4}/{total}] {experiment:<4} {case['id']} "
-                          f"trial {trial}  ETA {eta/60:5.1f} min", flush=True)
-        all_trials.extend(bucket)
-        summaries[experiment] = summarize(bucket)
+    ck = ckpt.open("a", encoding="utf-8")
+    try:
+        for experiment in CONFIGURATIONS:
+            bucket: list[TrialResult] = []
+            for case in cases:
+                for trial in range(trials):
+                    tid = case["id"] + "/" + experiment + "/t" + str(trial)
+                    cached = done_records.get(tid)
+                    if cached is not None:
+                        bucket.append(cached)
+                        done += 1
+                        continue
+                    result = run_trial(case, experiment, backend, model, trial, adaptive)
+                    bucket.append(result)
+                    ck.write(json.dumps(result.full_record(), ensure_ascii=False) + "\n")
+                    ck.flush()
+                    os.fsync(ck.fileno())
+                    done += 1
+                    fresh += 1
+                    if verbose:
+                        rate = (perf_counter() - start_all) / max(1, fresh)
+                        eta = rate * (total - done)
+                        print(f"  [{done:>4}/{total}] {experiment:<4} {case['id']} "
+                              f"trial {trial}  ETA {eta/60:5.1f} min", flush=True)
+            all_trials.extend(bucket)
+            summaries[experiment] = summarize(bucket)
+    finally:
+        ck.close()
 
     # E4: per-strategy breakdown of the defended attack configuration.
     summaries["E4_by_strategy"] = summarize_by_strategy(
@@ -200,7 +238,6 @@ def run_experiments(backend: str = "mock", model: str = config.MODEL_NAME,
         for t in all_trials:
             writer.writerow(t.row())
 
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
     (LOG_DIR / (tag + ".json")).write_text(json.dumps({
         "metadata": report["metadata"],
         "configurations": CONFIGURATIONS,

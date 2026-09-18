@@ -1,0 +1,27 @@
+[23:31:44] ============================================================
+[23:31:44] run_all profile=deadline  estimate ~6.1 h
+[23:31:44]   main   llama3.1:8b x20  -> 640 trials
+[23:31:44]   cross  mistral:7b-instruct x10 -> 320 trials
+[23:31:44]   adapt  llama3.1:8b x5 (both) -> 160 trials
+[23:31:44] resumable: rerun this script after a shutdown and it continues
+[23:31:44] ============================================================
+[23:31:44] selftest passed
+[23:31:44] START main_llama: main.py --backend ollama --model llama3.1:8b --scenario experiments --trials 20
+[23:38:21]   main_llama: 20/640  ETA 149 min
+[23:42:28]   main_llama: 40/640  ETA 133 min
+[23:46:52]   main_llama: 60/640  ETA 129 min
+[23:50:05]   main_llama: 80/640  ETA 116 min
+[23:54:03]   main_llama: 100/640  ETA 111 min
+[23:58:30]   main_llama: 120/640  ETA 108 min
+[00:02:49]   main_llama: 140/640  ETA 104 min
+[00:08:20]   main_llama: 160/640  ETA 104 min
+[00:16:32]   main_llama: 180/640  ETA 110 min
+[00:25:05]   main_llama: 200/640  ETA 113 min
+[00:33:30]   main_llama: 220/640  ETA 115 min
+[00:41:20]   main_llama: 240/640  ETA 113 min
+[00:49:15]   main_llama: 260/640  ETA 111 min
+[00:59:46]   main_llama: 280/640  ETA 111 min
+[01:05:50]   main_llama: 300/640  ETA 105 min
+[01:12:15]   main_llama: 320/640  ETA 99 min
+[01:21:51]   main_llama: 340/640  ETA 96 min
+[01:30:51]   main_llama: 360/640  ETA 91 min

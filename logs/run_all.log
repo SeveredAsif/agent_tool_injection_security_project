@@ -1,0 +1,105 @@
+[23:31:44] ============================================================
+[23:31:44] run_all profile=deadline  estimate ~6.1 h
+[23:31:44]   main   llama3.1:8b x20  -> 640 trials
+[23:31:44]   cross  mistral:7b-instruct x10 -> 320 trials
+[23:31:44]   adapt  llama3.1:8b x5 (both) -> 160 trials
+[23:31:44] resumable: rerun this script after a shutdown and it continues
+[23:31:44] ============================================================
+[23:31:44] selftest passed
+[23:31:44] START main_llama: main.py --backend ollama --model llama3.1:8b --scenario experiments --trials 20
+[23:38:21]   main_llama: 20/640  ETA 149 min
+[23:42:28]   main_llama: 40/640  ETA 133 min
+[23:46:52]   main_llama: 60/640  ETA 129 min
+[23:50:05]   main_llama: 80/640  ETA 116 min
+[23:54:03]   main_llama: 100/640  ETA 111 min
+[23:58:30]   main_llama: 120/640  ETA 108 min
+[00:02:49]   main_llama: 140/640  ETA 104 min
+[00:08:20]   main_llama: 160/640  ETA 104 min
+[00:16:32]   main_llama: 180/640  ETA 110 min
+[00:25:05]   main_llama: 200/640  ETA 113 min
+[00:33:30]   main_llama: 220/640  ETA 115 min
+[00:41:20]   main_llama: 240/640  ETA 113 min
+[00:49:15]   main_llama: 260/640  ETA 111 min
+[00:59:46]   main_llama: 280/640  ETA 111 min
+[01:05:50]   main_llama: 300/640  ETA 105 min
+[01:12:15]   main_llama: 320/640  ETA 99 min
+[01:21:51]   main_llama: 340/640  ETA 96 min
+[01:30:51]   main_llama: 360/640  ETA 91 min
+[09:42:26] ============================================================
+[09:42:26] run_all profile=deadline  estimate ~6.1 h
+[09:42:26]   main   llama3.1:8b x20  -> 640 trials
+[09:42:26]   cross  mistral:7b-instruct x10 -> 320 trials
+[09:42:26]   adapt  llama3.1:8b x5 (both) -> 160 trials
+[09:42:26] resumable: rerun this script after a shutdown and it continues
+[09:42:26] ============================================================
+[09:42:32] selftest passed
+[09:42:32] START main_llama: main.py --backend ollama --model llama3.1:8b --scenario experiments --trials 20
+[09:42:33]   main_llama: resuming, 363 trial(s) already done
+[09:50:24]   main_llama: 380/640  ETA 84 min
+[09:57:09]   main_llama: 400/640  ETA 79 min
+[10:04:12]   main_llama: 420/640  ETA 74 min
+[10:10:03]   main_llama: 440/640  ETA 65 min
+[10:14:49]   main_llama: 460/640  ETA 55 min
+[10:22:44]   main_llama: 480/640  ETA 52 min
+[10:28:50]   main_llama: 500/640  ETA 45 min
+[10:35:39]   main_llama: 520/640  ETA 39 min
+[10:42:49]   main_llama: 540/640  ETA 33 min
+[10:52:11]   main_llama: 560/640  ETA 27 min
+[11:03:42]   main_llama: 580/640  ETA 22 min
+[11:14:56]   main_llama: 600/640  ETA 15 min
+[11:24:42]   main_llama: 620/640  ETA 8 min
+[11:35:19]   main_llama: 640/640  ETA 0 min
+[11:35:28] DONE  main_llama in 112.9 min (exit 0)
+[11:35:28] pulling mistral:7b-instruct (this is a ~4 GB download)
+[11:35:41]   pull pulling f5074b1221da: 5%
+[11:35:50]   pull pulling f5074b1221da: 10%
+[11:35:58]   pull pulling f5074b1221da: 15%
+[11:36:06]   pull pulling f5074b1221da: 20%
+[11:36:15]   pull pulling f5074b1221da: 25%
+[11:36:23]   pull pulling f5074b1221da: 30%
+[11:36:31]   pull pulling f5074b1221da: 35%
+[11:36:40]   pull pulling f5074b1221da: 40%
+[11:36:49]   pull pulling f5074b1221da: 45%
+[11:36:57]   pull pulling f5074b1221da: 50%
+[11:37:05]   pull pulling f5074b1221da: 55%
+[11:37:14]   pull pulling f5074b1221da: 60%
+[11:37:22]   pull pulling f5074b1221da: 65%
+[11:37:30]   pull pulling f5074b1221da: 70%
+[11:37:38]   pull pulling f5074b1221da: 75%
+[11:37:47]   pull pulling f5074b1221da: 80%
+[11:37:59]   pull pulling f5074b1221da: 85%
+[11:38:08]   pull pulling f5074b1221da: 90%
+[11:38:16]   pull pulling f5074b1221da: 95%
+[11:38:51] pull succeeded
+[11:38:51] START cross_mistral: main.py --backend ollama --model mistral:7b-instruct --scenario experiments --trials 10
+[11:43:21]   cross_mistral: 20/320  ETA 36 min
+[11:45:39]   cross_mistral: 40/320  ETA 33 min
+[11:48:32]   cross_mistral: 60/320  ETA 33 min
+[11:50:43]   cross_mistral: 80/320  ETA 29 min
+[11:53:06]   cross_mistral: 100/320  ETA 27 min
+[11:54:46]   cross_mistral: 120/320  ETA 23 min
+[11:57:34]   cross_mistral: 140/320  ETA 21 min
+[11:59:46]   cross_mistral: 160/320  ETA 19 min
+[12:05:36]   cross_mistral: 180/320  ETA 19 min
+[12:08:08]   cross_mistral: 200/320  ETA 16 min
+[12:14:29]   cross_mistral: 220/320  ETA 15 min
+[12:23:02]   cross_mistral: 240/320  ETA 14 min
+[12:29:25]   cross_mistral: 260/320  ETA 11 min
+[12:31:21]   cross_mistral: 280/320  ETA 7 min
+[12:37:08]   cross_mistral: 300/320  ETA 4 min
+[12:43:08]   cross_mistral: 320/320  ETA 0 min
+[12:43:12] DONE  cross_mistral in 64.3 min (exit 0)
+[12:43:12] START adaptive: main.py --backend ollama --model llama3.1:8b --scenario experiments --trials 5 --adaptive both
+[12:49:48]   adaptive: 20/160  ETA 34 min
+[12:53:11]   adaptive: 40/160  ETA 25 min
+[12:57:03]   adaptive: 60/160  ETA 20 min
+[13:00:48]   adaptive: 80/160  ETA 16 min
+[13:07:53]   adaptive: 100/160  ETA 14 min
+[13:15:03]   adaptive: 120/160  ETA 10 min
+[13:21:24]   adaptive: 140/160  ETA 5 min
+[13:27:08]   adaptive: 160/160  ETA 0 min
+[13:27:12] DONE  adaptive in 44.0 min (exit 0)
+[13:27:12] wrote REPORT.md (16066 bytes) from 4 run(s)
+[13:27:12] ============================================================
+[13:27:12] ALL DONE -- see REPORT.md
+[13:27:12] ============================================================

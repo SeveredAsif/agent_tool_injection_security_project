@@ -1,0 +1,68 @@
+{
+  "started": "2026-09-18T09:42:26",
+  "updated": "2026-09-18T13:27:12",
+  "current": null,
+  "phases": [
+    {
+      "name": "selftest",
+      "status": "done",
+      "trials": 0
+    },
+    {
+      "name": "main_llama",
+      "status": "done",
+      "trials": 640,
+      "started": "2026-09-18T09:42:32",
+      "progress": {
+        "done": 640,
+        "total": 640
+      },
+      "eta_min": 0,
+      "elapsed_min": 112.9,
+      "finished": "2026-09-18T11:35:28"
+    },
+    {
+      "name": "pull_mistral",
+      "status": "done",
+      "trials": 0,
+      "progress": {
+        "done": 95,
+        "total": 100
+      }
+    },
+    {
+      "name": "cross_mistral",
+      "status": "done",
+      "trials": 320,
+      "started": "2026-09-18T11:38:51",
+      "progress": {
+        "done": 320,
+        "total": 320
+      },
+      "eta_min": 0,
+      "elapsed_min": 64.3,
+      "finished": "2026-09-18T12:43:12"
+    },
+    {
+      "name": "adaptive",
+      "status": "done",
+      "trials": 160,
+      "started": "2026-09-18T12:43:12",
+      "progress": {
+        "done": 160,
+        "total": 160
+      },
+      "eta_min": 0,
+      "elapsed_min": 44.0,
+      "finished": "2026-09-18T13:27:12"
+    },
+    {
+      "name": "report",
+      "status": "done",
+      "trials": 0
+    }
+  ],
+  "profile": "deadline",
+  "estimate_hours": 6.1,
+  "finished": "2026-09-18T13:27:12"
+}

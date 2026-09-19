@@ -2,7 +2,7 @@
 
 **CSE 406 Computer Security — Unauthorized Action via Tool Output**  
 Ali Asif Khan (2105131) · Shariar Al Kabir (2105132)  
-Generated 2026-09-19 02:25 from `results/ollama_llama3.1-8b_t50_none/summary.json`
+Date: 2026-09-19
 
 ---
 

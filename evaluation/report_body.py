@@ -54,7 +54,7 @@ def build(runs: dict[str, dict[str, Any]]) -> str:
     w("")
     w("**CSE 406 Computer Security — Unauthorized Action via Tool Output**  ")
     w("Ali Asif Khan (2105131) · Shariar Al Kabir (2105132)  ")
-    w(f"Generated {datetime.now():%Y-%m-%d %H:%M} from `results/{main_tag}/summary.json`")
+    w(f"Date: {datetime.now():%Y-%m-%d}")
     w("")
     w("---")
     w("")

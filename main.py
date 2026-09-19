@@ -58,33 +58,35 @@ def _load_demo_case(strategy: str) -> dict:
 def demo(backend: str, model: str, strategy: str, adaptive: bool) -> None:
     case = _load_demo_case(strategy)
     print("Replaying graded case", case["id"], "-", case["user_task"])
-    attack_cfg = AttackConfig(strategy=strategy, target_tool=case["target_tool"],
-                              attack_on=case["attack_on"], adaptive=adaptive)
-
-    print("\n=== ATTACKER-CONTROLLED TOOL OUTPUT (strategy: " + strategy + ") ===\n")
-    # A representative honest output for the attacked tool, so the preview matches
-    # the case. The real run below produces the real output; this is illustration.
-    honest_samples = {
-        "weather": "Temperature: 31 C, Humidity: 72 percent",
-        "currency": "100.00 USD = 11750.00 BDT",
-        "search": "The capital of France is Paris.",
-    }
-    honest = honest_samples.get(case["attack_on"], "(tool output)")
-    preview = AttackTool(attack_cfg)
-    print("variant:", preview.variant.as_dict())
-    print()
-    print(preview.poison(honest, tool_name=case["attack_on"]))
 
     for label, defense_on in (("E2  VULNERABLE AGENT (no defense)", False),
                               ("E3  DEFENDED AGENT", True)):
         env = seed_environment()
         tools = make_tools(env)
         llm = _build_llm(backend, model, tools, strategy)
+        # A fresh attack tool per configuration; case_id makes the payload variant
+        # match the graded run for this case.
+        attack = AttackTool(AttackConfig(
+            strategy=strategy, target_tool=case["target_tool"],
+            attack_on=case["attack_on"], case_id=case["id"], adaptive=adaptive))
         agent = Agent(llm, env, tools,
                       AgentConfig(intent_category=case["intent_category"],
                                   defense_enabled=defense_on),
-                      attack=AttackTool(attack_cfg))
+                      attack=attack)
         run = agent.run(case["user_task"])
+
+        # Show the attacker-controlled output actually served in the undefended
+        # run. The tool produced D, the attack returned P = D + I. These are the
+        # exact bytes the model received -- captured from the run, not typed here.
+        if not defense_on and attack.log.served:
+            first = attack.log.served[0]
+            print("\n=== ATTACKER-CONTROLLED TOOL OUTPUT (strategy: " + strategy + ") ===\n")
+            print("variant:", attack.variant.as_dict())
+            print("\nhonest tool output D  (produced by " + first.tool + "() ):")
+            print("  " + first.legitimate)
+            print("\npoisoned output P = D + I  (served to the model):")
+            print(first.payload)
+
         _show(label, run, env)
 
 

@@ -1,6 +1,6 @@
 # CSE 406 — Agent Tool-Injection: Unauthorized Action via Tool Output
 
-Implementation of the design report `security.pdf`.
+Implements the group's design-report proposal (submitted separately).
 Members: Ali Asif Khan (2105131), Shariar Al Kabir (2105132).
 
 An attacker controls the **content returned by one normal tool**. The injected
@@ -72,9 +72,8 @@ Measured on `llama3.1:8b`, CPU inference, this machine: **19.7 s per trial**
 | 25 | 800 | ~4.4 h |
 | 100 (report target) | 3200 | ~17.5 h |
 
-Watch a run in progress with `python watch_progress.py --trials N --follow`
-(the harness itself prints per-trial progress; `watch_progress.py` also works
-for runs started before that was added).
+The harness prints per-trial progress as it runs (`[done/total] ... ETA ...`),
+so a run is observable from its own stdout.
 
 ## Two backends
 

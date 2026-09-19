@@ -8,7 +8,7 @@ one trial (~20 s). Re-running this script picks up exactly where it stopped.
     python run_all.py --profile full   # proposal-exact, ~18.5 h
     python run_all.py --report-only    # regenerate REPORT.md from existing data
 
-Watch it with:  python watch.py --follow
+Each phase streams per-trial progress to stdout and to logs/run_all.log.
 """
 from __future__ import annotations
 
